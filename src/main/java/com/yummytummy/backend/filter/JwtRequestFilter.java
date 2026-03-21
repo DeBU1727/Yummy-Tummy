@@ -35,7 +35,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
 
         String path = request.getRequestURI();
-        if (path.startsWith("/api/staff/")) {
+        if (path.startsWith("/api/staff/") || path.equals("/api/auth/verify-email")) {
             filterChain.doFilter(request, response);
             return;
         }

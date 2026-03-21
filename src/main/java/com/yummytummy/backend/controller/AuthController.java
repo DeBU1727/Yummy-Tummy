@@ -61,6 +61,15 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or expired OTP.");
     }
 
+    @PostMapping("/verify-email")
+    public ResponseEntity<?> verifyEmail(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        if (userRepository.findByEmail(email).isPresent()) {
+            return ResponseEntity.ok("Email exists.");
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found with this email.");
+    }
+
 
 
     @PostMapping("/reset-password")

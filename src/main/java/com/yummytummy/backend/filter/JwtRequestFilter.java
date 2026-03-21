@@ -40,14 +40,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             return;
         }
 
-        System.out.println("JwtRequestFilter: doFilterInternal for URI: " + request.getRequestURI());
-
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String userEmail;
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            System.out.println("JwtRequestFilter: No JWT token found in header or invalid format.");
             filterChain.doFilter(request, response);
             return;
         }
@@ -55,13 +52,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         jwt = authHeader.substring(7);
         try {
             userEmail = jwtUtil.extractUsername(jwt);
-            System.out.println("JwtRequestFilter: Extracted JWT: " + jwt);
-            System.out.println("JwtRequestFilter: Extracted User Email: " + userEmail);
 
             if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-                System.out.println("JwtRequestFilter: Loaded UserDetails for: " + userDetails.getUsername());
-                System.out.println("JwtRequestFilter: User Authorities: " + userDetails.getAuthorities());
 
                 if (jwtUtil.validateToken(jwt, userDetails)) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
@@ -73,15 +66,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                             new WebAuthenticationDetailsSource().buildDetails(request)
                     );
                     SecurityContextHolder.getContext().setAuthentication(authToken);
-                    System.out.println("JwtRequestFilter: Authentication set in SecurityContext for: " + userEmail);
                 }
             }
         } catch (Exception e) {
-            System.out.println("JwtRequestFilter: Could not validate JWT token: " + e.getMessage());
-            // We don't throw an exception here, so public routes can still be accessed
+            // Silently continue for public routes
         }
         
         filterChain.doFilter(request, response);
-        System.out.println("JwtRequestFilter: Finished doFilterInternal for URI: " + request.getRequestURI());
     }
 }

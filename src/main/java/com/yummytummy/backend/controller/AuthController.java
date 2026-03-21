@@ -44,7 +44,7 @@ public class AuthController {
     public ResponseEntity<?> sendOtp(@RequestBody Map<String, String> request) {
         String email = request.get("email");
         try {
-            otpService.sendOtpForPasswordReset(email);
+            otpService.sendOtp(email);
             return ResponseEntity.ok("OTP sent to your email.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to send OTP.");
@@ -118,7 +118,7 @@ public class AuthController {
         if (!otpService.isOtpVerified(loginRequest.email())) {
             // Credentials are correct, but need OTP
             try {
-                otpService.sendOtpForPasswordReset(loginRequest.email());
+                otpService.sendOtp(loginRequest.email());
                 return ResponseEntity.status(HttpStatus.ACCEPTED).body("OTP_REQUIRED");
             } catch (Exception e) {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

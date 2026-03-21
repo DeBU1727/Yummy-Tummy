@@ -49,7 +49,7 @@ public class UserController {
 
         // 2. If correct, check for OTP verification
         if (!otpService.isOtpVerified(email)) {
-            otpService.sendOtpForPasswordReset(email);
+            otpService.sendOtp(email);
             return ResponseEntity.status(HttpStatus.ACCEPTED).body("OTP_REQUIRED");
         }
 

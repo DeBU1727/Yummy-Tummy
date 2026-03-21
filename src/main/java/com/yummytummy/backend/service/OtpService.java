@@ -40,10 +40,7 @@ public class OtpService {
     }
 
     @Transactional
-    public void sendOtpForPasswordReset(String email) { // Renamed method
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
-
+    public void sendOtp(String email) { 
         // Invalidate any previous unverified OTPs for this email that are still active
         // Find the latest OTP for the email
         otpRepository.findTopByEmailOrderByExpirationTimeDesc(email).ifPresent(otp -> {

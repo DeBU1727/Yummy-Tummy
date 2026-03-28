@@ -85,6 +85,11 @@ public class AuthController {
             userService.resetPassword(email, newPassword);
             otpService.clearOtp(email);
             return ResponseEntity.ok("Password reset successful");
+        } catch (RuntimeException e) {
+            if (e.getMessage().equals("User not found")) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found with this email.");
+            }
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to reset password");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to reset password");
         }

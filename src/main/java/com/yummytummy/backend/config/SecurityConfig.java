@@ -14,6 +14,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.http.HttpMethod;
 
 import java.util.Arrays;
 import java.util.List;
@@ -39,11 +40,15 @@ public class SecurityConfig {
             .cors(Customizer.withDefaults()) // Apply CORS configuration from the bean
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(authz -> authz
+                // Health check explicitly permitting GET and HEAD methods for monitors
+                .requestMatchers(HttpMethod.GET, "/health").permitAll()
+                .requestMatchers(HttpMethod.HEAD, "/health").permitAll()
+
                 // Allow all OPTIONS requests for CORS preflight
                 .requestMatchers(org.springframework.web.bind.annotation.RequestMethod.OPTIONS.name()).permitAll()
                 
                 // Public endpoints first to ensure they are accessible
-                .requestMatchers("/api/auth/**", "/api/auth/verify-email", "/api/menu", "/uploads/**", "/api/offers", "/api/offers/**", "/api/staff/**", "/api/support/**", "/error", "/health").permitAll()
+                .requestMatchers("/api/auth/**", "/api/auth/verify-email", "/api/menu", "/uploads/**", "/api/offers", "/api/offers/**", "/api/staff/**", "/api/support/**", "/error").permitAll()
                 
                 // Protected endpoints
                 .requestMatchers("/api/user/**", "/api/cart/**").hasAnyAuthority("ROLE_USER", "USER")

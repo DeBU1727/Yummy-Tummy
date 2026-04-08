@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .requestMatchers(org.springframework.web.bind.annotation.RequestMethod.OPTIONS.name()).permitAll()
                 
                 // Public endpoints first to ensure they are accessible
-                .requestMatchers("/api/auth/**", "/api/auth/verify-email", "/api/menu", "/uploads/**", "/api/offers", "/api/offers/**", "/api/staff/**", "/api/support/**", "/error").permitAll()
+                .requestMatchers("/api/auth/**", "/api/auth/verify-email", "/api/menu", "/uploads/**", "/api/offers", "/api/offers/**", "/api/staff/**", "/api/support/**", "/error", "/health").permitAll()
                 
                 // Protected endpoints
                 .requestMatchers("/api/user/**", "/api/cart/**").hasAnyAuthority("ROLE_USER", "USER")
